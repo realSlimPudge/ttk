@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
+import { host } from "@/api/host";
 export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -27,21 +27,19 @@ export default function LoginForm() {
     setError("");
 
     const formData = new FormData(event.currentTarget);
-    const username = formData.get("username") as string;
+    const login = formData.get("username") as string;
     const password = formData.get("password") as string;
 
     try {
-      // Here you would typically make an API call to authenticate the user
-      // For example:
-      // const response = await fetch('/api/auth/login', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ username, password }),
-      // })
+      const data = { login, password };
+      console.log("asdfasdf");
+      const response = await fetch(`http://${host}/api/v1/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ login, password }),
+      });
 
-      // if (!response.ok) throw new Error('Login failed')
-
-      console.log("Logging in with:", { username, password });
+      if (!response.ok) throw new Error("Registration failed");
 
       router.push("/articles");
     } catch (err) {

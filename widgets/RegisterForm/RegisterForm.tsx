@@ -22,6 +22,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { host } from "@/api/host";
 
 export default function RegisterForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -36,8 +37,8 @@ export default function RegisterForm() {
     setPasswordError("");
 
     const formData = new FormData(event.currentTarget);
-    const fullName = formData.get("fullName") as string;
-    const username = formData.get("username") as string;
+    const name = formData.get("fullName") as string;
+    const login = formData.get("username") as string;
     const password = formData.get("password") as string;
     const confirmPassword = formData.get("confirmPassword") as string;
 
@@ -49,22 +50,16 @@ export default function RegisterForm() {
     }
 
     try {
-      const data = { fullName, username, password };
+      const data = { login, name, password };
       console.log("asdfasdf");
-      const response = await fetch(`http://localhost:8080/api/v1/register`, {
+      const response = await fetch(`http://${host}/api/v1/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data }),
+        body: JSON.stringify({ login, name, password }),
       });
 
       if (!response.ok) throw new Error("Registration failed");
-      router.push("/login");
-      // Имитация успешной регистрации
-      console.log("Регистрация пользователя:", {
-        fullName,
-        username,
-        password,
-      });
+      router.push("/articles");
 
       // Перенаправление на страницу входа после успешной регистрации
     } catch (err) {
