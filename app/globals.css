@@ -16,6 +16,7 @@
   transform: translateX(-50%);
   left: 50%;
   bottom: -20%;
+  transition: 300ms ease all;
 }
 
 .nav__animation.active:before {

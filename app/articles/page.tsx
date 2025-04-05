@@ -1,7 +1,7 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useState } from "react";
-import Header from "@/header";
 import { ArticleList } from "@/components/articles/article-list";
 import { ArticleEditor } from "@/components/articles/article-editor";
 import { ArticleHistory } from "@/components/articles/article-history";
@@ -35,7 +35,7 @@ const initialArticles: Article[] = [
     title: "Основы TypeScript",
     content:
       "<p>TypeScript — это строго типизированный язык программирования, который является надмножеством JavaScript.</p><ol><li>Типы данных</li><li>Интерфейсы</li><li>Дженерики</li></ol>",
-    imageUrl: "/placeholder.svg?height=200&width=400",
+    imageUrl: "",
     createdAt: new Date("2023-09-05"),
     updatedAt: new Date("2023-12-10"),
     createdBy: {
@@ -208,9 +208,12 @@ export default function ArticlesPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container mx-auto max-w-screen-lg px-4 py-8">
+    <motion.section
+      className="min-h-screen flex flex-col"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
+      <div className="flex-1 container mx-auto max-w-screen-lg px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Статьи</h1>
           <div className="flex space-x-4">
@@ -244,7 +247,7 @@ export default function ArticlesPage() {
             onClose={() => setIsHistoryOpen(false)}
           />
         )}
-      </main>
-    </div>
+      </div>
+    </motion.section>
   );
 }

@@ -3,7 +3,7 @@ import LoginForm from "@/widgets/LoginForm/LoginForm";
 import { motion } from "motion/react";
 export default function LoginPage() {
   return (
-    <motion.div
+    <motion.section
       className="min-h-[calc(100vh_-_60px)] flex items-center justify-center"
       initial={{
         opacity: 0,
@@ -15,6 +15,6 @@ export default function LoginPage() {
       }}
     >
       <LoginForm />
-    </motion.div>
+    </motion.section>
   );
 }

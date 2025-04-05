@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { MoreVertical, Edit, Trash2, User } from "lucide-react";
 import Image from "next/image";
+import NoImageArticle from "./no-image";
 
 interface ArticleCardProps {
   article: Article;
@@ -50,12 +51,16 @@ export function ArticleCard({ article, onEdit, onDelete }: ArticleCardProps) {
       <Card className="h-full flex flex-col">
         <CardHeader className="p-0">
           <div className="relative h-48 w-full">
-            <Image
-              src={article.imageUrl || "/placeholder.svg"}
-              alt={article.title}
-              fill
-              className="object-cover rounded-t-lg"
-            />
+            {article.imageUrl ? (
+              <Image
+                src={article.imageUrl}
+                alt={article.title}
+                fill
+                className="object-cover rounded-t-lg"
+              />
+            ) : (
+              <NoImageArticle />
+            )}
           </div>
         </CardHeader>
         <CardContent className="flex-1 p-4">

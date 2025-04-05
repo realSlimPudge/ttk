@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -35,27 +34,23 @@ export default function Header() {
   ];
 
   return (
-    <motion.header
-      className="w-full border-b bg-background sticky top-0 z-10"
-      initial={{ opacity: 0, y: -30 }}
-      animate={{ opacity: 1, y: 0 }}
-    >
+    <header className="w-full border-b bg-background sticky top-0 z-10">
       <div className="container mx-auto max-w-screen-lg px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Название сайта */}
           <div className="flex-shrink-0">
             <Link href="/" className="text-xl font-bold">
-              Organizer
+              WebOrganizer
             </Link>
           </div>
-
-          {/* Навигация для десктопа */}
           <nav className="hidden md:flex items-center space-x-6">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-sm font-medium transition-colors hover:text-primary ${isActive(link.href) ? "text-primary" : "text-muted-foreground"
+                className={`text-sm nav__animation font-medium transition-all duration-200 ease hover:text-primary ${isActive(link.href)
+                    ? "text-primary active"
+                    : "text-muted-foreground"
                   }`}
               >
                 {link.name}
@@ -85,7 +80,7 @@ export default function Header() {
             ) : (
               <Link
                 href="/login"
-                className="bg-gray-950 flex justify-center items-center text-gray-50 px-3 py-2 rounded-xl"
+                className="bg-gray-950 text-gray-50 rounded-xl px-3 py-2 flex items-center"
               >
                 <LogIn className="mr-2 h-4 w-4" />
                 Войти
@@ -173,6 +168,6 @@ export default function Header() {
           </nav>
         </div>
       )}
-    </motion.header>
+    </header>
   );
 }

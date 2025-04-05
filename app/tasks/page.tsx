@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Header from "@/header";
+import { motion } from "framer-motion";
 import { TaskList } from "@/components/tasks/task-list";
 import { TaskEditor } from "@/components/tasks/task-editor";
 import { TaskViewer } from "@/components/tasks/task-viewer";
@@ -314,9 +314,12 @@ export default function TasksPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container mx-auto max-w-screen-lg px-4 py-8">
+    <motion.section
+      className="min-h-screen flex flex-col"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
+      <div className="flex-1 container mx-auto max-w-screen-lg px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Задачи</h1>
           <div className="flex space-x-4">
@@ -430,7 +433,7 @@ export default function TasksPage() {
             onClose={() => setIsHistoryOpen(false)}
           />
         )}
-      </main>
-    </div>
+      </div>
+    </motion.section>
   );
 }

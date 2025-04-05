@@ -49,16 +49,16 @@ export default function RegisterForm() {
     }
 
     try {
-      // Здесь обычно выполняется API-запрос для регистрации пользователя
-      // Например:
-      // const response = await fetch('/api/auth/register', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ fullName, username, password }),
-      // })
+      const data = { fullName, username, password };
+      console.log("asdfasdf");
+      const response = await fetch(`http://localhost:8080/api/v1/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data }),
+      });
 
-      // if (!response.ok) throw new Error('Registration failed')
-
+      if (!response.ok) throw new Error("Registration failed");
+      router.push("/login");
       // Имитация успешной регистрации
       console.log("Регистрация пользователя:", {
         fullName,
@@ -67,7 +67,6 @@ export default function RegisterForm() {
       });
 
       // Перенаправление на страницу входа после успешной регистрации
-      router.push("/login");
     } catch (err) {
       setError("Ошибка при регистрации. Пожалуйста, попробуйте снова.");
       console.error(err);
