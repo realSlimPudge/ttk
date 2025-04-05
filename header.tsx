@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { User, LogIn, Menu, X } from "lucide-react";
+import { ThemeToggle } from "./components/theme-switcher/ThemeSwitcher";
 
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -43,14 +44,16 @@ export default function Header() {
               WebOrganizer
             </Link>
           </div>
-
+          <ThemeToggle />
           {/* Навигация для десктопа */}
           <nav className="hidden md:flex items-center space-x-6">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-sm font-medium transition-colors hover:text-primary ${isActive(link.href) ? "text-primary" : "text-muted-foreground"
+                className={`text-sm nav__animation font-medium transition-all duration-200 ease hover:text-primary ${isActive(link.href)
+                    ? "text-primary active"
+                    : "text-muted-foreground"
                   }`}
               >
                 {link.name}
@@ -78,10 +81,13 @@ export default function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button onClick={toggleLogin} variant="default" size="sm">
+              <Link
+                href="/login"
+                className="bg-gray-950 text-gray-50 rounded-xl px-3 py-2 flex items-center"
+              >
                 <LogIn className="mr-2 h-4 w-4" />
                 Войти
-              </Button>
+              </Link>
             )}
           </div>
 
