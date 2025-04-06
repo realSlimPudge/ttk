@@ -28,6 +28,8 @@ import {
 import { MoreVertical, Edit, Trash2, User } from "lucide-react";
 import Image from "next/image";
 import NoImageArticle from "./no-image";
+import { toast } from "sonner";
+import { host } from "@/api/host";
 
 interface ArticleCardProps {
   article: Article;
@@ -37,13 +39,37 @@ interface ArticleCardProps {
 
 export function ArticleCard({ article, onEdit, onDelete }: ArticleCardProps) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-
-  const formatDate = (date: Date) => {
+  async function handleDelete() {
+    setIsDeleteDialogOpen(false);
+    try {
+      // Отправляем запрос на удаление статьи
+      const res = await fetch(`${host}/api/v1/article/${article.ID}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        throw new Error("Ошибка при удалении статьи");
+      } if(res.status === 500) {
+        toast.error("Ошибка при удалении статьи");
+      }
+    }
+    catch (error) {
+      console.error("Ошибка при удалении статьи:", error);
+      toast.error("Ошибка при удалении статьи");
+  }}
+  const formatDate = (date: Date | string | undefined | null) => {
+    if (!date) return "Неизвестно";
+  
+    const parsedDate = typeof date === "string" ? new Date(date) : date;
+  
+    if (isNaN(parsedDate.getTime())) {
+      return "Неизвестно"; // Возвращаем значение по умолчанию, если дата некорректна
+    }
+  
     return new Intl.DateTimeFormat("ru-RU", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
-    }).format(date);
+    }).format(parsedDate);
   };
 
   return (
@@ -51,22 +77,15 @@ export function ArticleCard({ article, onEdit, onDelete }: ArticleCardProps) {
       <Card className="h-full flex flex-col">
         <CardHeader className="p-0">
           <div className="relative h-48 w-full">
-            {article.imageUrl ? (
-              <Image
-                src={article.imageUrl}
-                alt={article.title}
-                fill
-                className="object-cover rounded-t-lg"
-              />
-            ) : (
+            
               <NoImageArticle />
-            )}
+
           </div>
         </CardHeader>
         <CardContent className="flex-1 p-4">
           <div className="flex justify-between items-start">
             <h3 className="text-lg font-semibold line-clamp-2">
-              {article.title}
+              {article.Title}
             </h3>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -91,16 +110,16 @@ export function ArticleCard({ article, onEdit, onDelete }: ArticleCardProps) {
             </DropdownMenu>
           </div>
           <div className="mt-2 text-sm text-muted-foreground">
-            Создано: {formatDate(article.createdAt)}
+            Создано: {formatDate(article.CreatedAt)}
           </div>
         </CardContent>
         <CardFooter className="p-4 pt-0 mt-auto">
           <div className="flex items-center">
             <div className="relative h-8 w-8 mr-2">
-              {article.lastEditedBy.avatarUrl ? (
+              {article.LastEditor.avatarUrl ? (
                 <Image
-                  src={article.lastEditedBy.avatarUrl}
-                  alt={article.lastEditedBy.name}
+                  src={article.LastEditor.avatarUrl}
+                  alt={article.LastEditor.name}
                   fill
                   className="rounded-full object-cover"
                 />
@@ -111,7 +130,7 @@ export function ArticleCard({ article, onEdit, onDelete }: ArticleCardProps) {
             <div className="text-sm">
               <p className="text-muted-foreground">Последнее изменение:</p>
               <p>
-                {article.lastEditedBy.name}, {formatDate(article.updatedAt)}
+                {article.LastEditor.name}, {formatDate(article.UpdatedAt)}
               </p>
             </div>
           </div>
@@ -126,7 +145,7 @@ export function ArticleCard({ article, onEdit, onDelete }: ArticleCardProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>Вы уверены?</AlertDialogTitle>
             <AlertDialogDescription>
-              Это действие нельзя отменить. Статья &quot;{article.title}&quot;
+              Это действие нельзя отменить. Статья &quot;{article.Title}&quot;
               будет удалена.
             </AlertDialogDescription>
           </AlertDialogHeader>

@@ -11,7 +11,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { User, LogIn, Menu, X } from "lucide-react";
+import {
+  User,
+  LogIn,
+  Menu,
+  X,
+  PanelsTopLeft,
+  Newspaper,
+  ListCheck,
+} from "lucide-react";
 
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -43,19 +51,35 @@ export default function Header() {
               WebOrganizer
             </Link>
           </div>
-          <nav className="hidden md:flex items-center space-x-6">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`text-sm nav__animation font-medium transition-all duration-200 ease hover:text-primary ${isActive(link.href)
-                    ? "text-primary active"
-                    : "text-muted-foreground"
-                  }`}
-              >
-                {link.name}
-              </Link>
-            ))}
+          <nav className="hidden md:flex items-center space-x-8">
+            <Link
+              href="/"
+              className={`flex items-center justify-center gap-x-2 text-sm nav__animation font-medium transition-all duration-200 ease hover:text-primary ${isActive("/") ? "text-primary active" : "text-muted-foreground"
+                }`}
+            >
+              <PanelsTopLeft />
+              Главная
+            </Link>
+            <Link
+              href="/articles"
+              className={`flex items-center justify-center gap-x-2 text-sm nav__animation font-medium transition-all duration-200 ease hover:text-primary ${isActive("/articles")
+                  ? "text-primary active"
+                  : "text-muted-foreground"
+                }`}
+            >
+              <Newspaper />
+              Статьи
+            </Link>
+            <Link
+              href="/tasks"
+              className={`flex items-center justify-center gap-x-2 text-sm nav__animation font-medium transition-all duration-200 ease hover:text-primary ${isActive("/tasks")
+                  ? "text-primary active"
+                  : "text-muted-foreground"
+                }`}
+            >
+              <ListCheck />
+              Задачи
+            </Link>
           </nav>
 
           {/* Кнопки входа/профиля для десктопа */}

@@ -11,7 +11,10 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, History, ClipboardList, Clock, CheckCircle } from "lucide-react";
 import type { Task, TaskStatus, HistoryEntry, User } from "@/types/task";
+import useSWR from "swr";
+import { host } from "@/api/host";
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json);
 // Демонстрационные данные пользователей
 const demoUsers: User[] = [
   {
@@ -151,6 +154,9 @@ export default function TasksPage() {
   const [currentTask, setCurrentTask] = useState<Task | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const { data, isLoading } = useSWR(`${host}/api/v1/articles`, fetcher, {
+    refreshInterval: 20000,
+  });
   // Текущий пользователь (для демонстрации)
   const currentUser = demoUsers[0];
 

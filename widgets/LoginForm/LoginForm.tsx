@@ -31,15 +31,18 @@ export default function LoginForm() {
     const password = formData.get("password") as string;
 
     try {
-      const data = { login, password };
-      console.log("asdfasdf");
-      const response = await fetch(`http://${host}/api/v1/login`, {
+      const response = await fetch(`${host}/api/v1/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ login, password }),
       });
 
       if (!response.ok) throw new Error("Registration failed");
+
+      const data = await response.json();
+      const token = data.token
+    
+      document.cookie = `token=${token}; path=/; max-age=3600; secure; SameSite=Strict`;
 
       router.push("/articles");
     } catch (err) {

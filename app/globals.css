@@ -10,12 +10,12 @@
 .nav__animation:before {
   content: "";
   background-color: black;
-  height: 1px;
+  height: 2px;
   width: 0%;
   position: absolute;
   transform: translateX(-50%);
   left: 50%;
-  bottom: -20%;
+  bottom: -82%;
   transition: 300ms ease all;
 }
 

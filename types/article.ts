@@ -5,14 +5,14 @@ export interface User {
 }
 
 export interface Article {
-  id: string
-  title: string
-  content: string
-  imageUrl: string
-  createdAt: Date
-  updatedAt: Date
-  createdBy: User
-  lastEditedBy: User
+  ID: string
+  Title: string
+  Content: string
+  Image: string
+  CreatedAt: Date
+  UpdatedAt: Date
+  CreatedBy: User
+  LastEditor: User
 }
 
 export interface HistoryEntry {

@@ -50,9 +50,7 @@ export default function RegisterForm() {
     }
 
     try {
-      const data = { login, name, password };
-      console.log("asdfasdf");
-      const response = await fetch(`http://${host}/api/v1/register`, {
+      const response = await fetch(`${host}/api/v1/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ login, name, password }),

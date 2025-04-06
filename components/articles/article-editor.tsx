@@ -24,9 +24,9 @@ export function ArticleEditor({ article, onSave, onCancel }: ArticleEditorProps)
   // Инициализация формы при открытии
   useEffect(() => {
     if (article) {
-      setTitle(article.title)
-      setContent(article.content)
-      setImageUrl(article.imageUrl)
+      setTitle(article.Title)
+      setContent(article.Content)
+      setImageUrl(article.Image)
     } else {
       setTitle("")
       setContent("")
@@ -36,7 +36,7 @@ export function ArticleEditor({ article, onSave, onCancel }: ArticleEditorProps)
 
   const handleSave = () => {
     const updatedArticle: Article = {
-      id: article?.id || "",
+      Id: article?.ID || "",
       title,
       content,
       imageUrl,
@@ -70,7 +70,7 @@ export function ArticleEditor({ article, onSave, onCancel }: ArticleEditorProps)
     <Dialog open={true} onOpenChange={onCancel}>
       <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{article ? `Редактирование статьи: ${article.title}` : "Создание новой статьи"}</DialogTitle>
+          <DialogTitle>{article ? `Редактирование статьи: ${article.Title}` : "Создание новой статьи"}</DialogTitle>
         </DialogHeader>
 
         <div className="grid gap-4 py-4">

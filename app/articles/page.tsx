@@ -3,210 +3,53 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { ArticleList } from "@/components/articles/article-list";
-import { ArticleEditor } from "@/components/articles/article-editor";
-import { ArticleHistory } from "@/components/articles/article-history";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import type { Article, HistoryEntry } from "@/types/article";
+import useSWR from "swr";
+import { host } from "@/api/host";
 
-// Демонстрационные данные
-const initialArticles: Article[] = [
-  {
-    id: "1",
-    title: "Введение в React",
-    content:
-      "<p>React — это библиотека JavaScript для создания пользовательских интерфейсов.</p><ol><li>Компонентный подход</li><li>Виртуальный DOM</li><li>Однонаправленный поток данных</li></ol>",
-    imageUrl: "/placeholder.svg?height=200&width=400",
-    createdAt: new Date("2023-10-15"),
-    updatedAt: new Date("2023-11-20"),
-    createdBy: {
-      id: "user1",
-      name: "Иван Петров",
-      avatarUrl: "",
-    },
-    lastEditedBy: {
-      id: "user2",
-      name: "Мария Сидорова",
-      avatarUrl: "",
-    },
-  },
-  {
-    id: "2",
-    title: "Основы TypeScript",
-    content:
-      "<p>TypeScript — это строго типизированный язык программирования, который является надмножеством JavaScript.</p><ol><li>Типы данных</li><li>Интерфейсы</li><li>Дженерики</li></ol>",
-    imageUrl: "",
-    createdAt: new Date("2023-09-05"),
-    updatedAt: new Date("2023-12-10"),
-    createdBy: {
-      id: "user2",
-      name: "Мария Сидорова",
-      avatarUrl: "",
-    },
-    lastEditedBy: {
-      id: "user1",
-      name: "Иван Петров",
-      avatarUrl: "",
-    },
-  },
-];
 
-const initialHistory: HistoryEntry[] = [
-  {
-    id: "h1",
-    articleId: "1",
-    articleTitle: "Введение в React",
-    eventType: "create",
-    timestamp: new Date("2023-10-15"),
-    user: {
-      id: "user1",
-      name: "Иван Петров",
-      avatarUrl: "",
+const fetcher = (url: string) => {
+  const token = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("token="))
+    ?.split("=")[1];
+
+  return fetch(url, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token ? `Bearer ${token}` : "",
     },
-  },
-  {
-    id: "h2",
-    articleId: "1",
-    articleTitle: "Введение в React",
-    eventType: "update",
-    timestamp: new Date("2023-11-20"),
-    user: {
-      id: "user2",
-      name: "Мария Сидорова",
-      avatarUrl: "",
-    },
-  },
-  {
-    id: "h3",
-    articleId: "2",
-    articleTitle: "Основы TypeScript",
-    eventType: "create",
-    timestamp: new Date("2023-09-05"),
-    user: {
-      id: "user2",
-      name: "Мария Сидорова",
-      avatarUrl: "",
-    },
-  },
-  {
-    id: "h4",
-    articleId: "2",
-    articleTitle: "Основы TypeScript",
-    eventType: "update",
-    timestamp: new Date("2023-12-10"),
-    user: {
-      id: "user1",
-      name: "Иван Петров",
-      avatarUrl: "",
-    },
-  },
-];
+  }).then((res) => res.json());
+};
 
 export default function ArticlesPage() {
-  const [articles, setArticles] = useState<Article[]>(initialArticles);
-  const [history, setHistory] = useState<HistoryEntry[]>(initialHistory);
-  const [isEditorOpen, setIsEditorOpen] = useState(false);
-  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
-  const [currentArticle, setCurrentArticle] = useState<Article | null>(null);
+  const { data: articles, mutate } = useSWR(`${host}/api/v1/article/show`, fetcher, {refreshInterval: 10000});
 
-  // Текущий пользователь (для демонстрации)
-  const currentUser = {
-    id: "user1",
-    name: "Иван Петров",
-    avatarUrl: "/placeholder.svg?height=40&width=40",
+  
+
+  const handleDeleteArticle = async (articleId: string) => {
+    const token = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("token="))
+      ?.split("=")[1];
+
+    await fetch(`${host}/api/v1/article/${articleId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    mutate(); // Обновляем список статей
   };
-
-  // Обработчик создания новой статьи
-  const handleCreateArticle = () => {
-    setCurrentArticle(null);
-    setIsEditorOpen(true);
-  };
-
-  // Обработчик редактирования статьи
-  const handleEditArticle = (article: Article) => {
-    setCurrentArticle(article);
-    setIsEditorOpen(true);
-  };
-
-  // Обработчик удаления статьи
-  const handleDeleteArticle = (articleId: string) => {
-    // Добавляем запись в историю
-    const articleToDelete = articles.find((a) => a.id === articleId);
-    if (articleToDelete) {
-      const newHistoryEntry: HistoryEntry = {
-        id: `h${history.length + 1}`,
-        articleId,
-        articleTitle: articleToDelete.title,
-        eventType: "delete",
-        timestamp: new Date(),
-        user: currentUser,
-      };
-      setHistory([newHistoryEntry, ...history]);
-    }
-
-    // Удаляем статью
-    setArticles(articles.filter((article) => article.id !== articleId));
-  };
-
-  // Обработчик сохранения статьи
-  const handleSaveArticle = (article: Article) => {
-    const now = new Date();
-
-    if (article.id) {
-      // Обновление существующей статьи
-      const updatedArticle = {
-        ...article,
-        updatedAt: now,
-        lastEditedBy: currentUser,
-      };
-
-      setArticles(
-        articles.map((a) => (a.id === article.id ? updatedArticle : a)),
-      );
-
-      // Добавляем запись в историю
-      const newHistoryEntry: HistoryEntry = {
-        id: `h${history.length + 1}`,
-        articleId: article.id,
-        articleTitle: article.title,
-        eventType: "update",
-        timestamp: now,
-        user: currentUser,
-      };
-      setHistory([newHistoryEntry, ...history]);
-    } else {
-      // Создание новой статьи
-      const newArticle = {
-        ...article,
-        id: `${articles.length + 1}`,
-        createdAt: now,
-        updatedAt: now,
-        createdBy: currentUser,
-        lastEditedBy: currentUser,
-      };
-
-      setArticles([newArticle, ...articles]);
-
-      // Добавляем запись в историю
-      const newHistoryEntry: HistoryEntry = {
-        id: `h${history.length + 1}`,
-        articleId: newArticle.id,
-        articleTitle: newArticle.title,
-        eventType: "create",
-        timestamp: now,
-        user: currentUser,
-      };
-      setHistory([newHistoryEntry, ...history]);
-    }
-
-    setIsEditorOpen(false);
-  };
-
-  // Обработчик просмотра истории
-  const handleViewHistory = () => {
-    setIsHistoryOpen(true);
-  };
-
+  if (!articles) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-muted-foreground">Загрузка...</p>
+      </div>
+    );
+  }
   return (
     <motion.section
       className="min-h-screen flex flex-col"
@@ -217,36 +60,21 @@ export default function ArticlesPage() {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Статьи</h1>
           <div className="flex space-x-4">
-            <Button onClick={handleViewHistory} variant="outline">
-              История изменений
-            </Button>
-            <Button onClick={handleCreateArticle}>
+            <Button variant="outline">История изменений</Button>
+            <Button>
               <Plus className="mr-2 h-4 w-4" />
               Новая статья
             </Button>
           </div>
         </div>
-
+              
         <ArticleList
-          articles={articles}
-          onEdit={handleEditArticle}
+          articles={articles.articles }
           onDelete={handleDeleteArticle}
+          onEdit={(article) => {
+            console.log("Edit article:", article);
+          }}
         />
-
-        {isEditorOpen && (
-          <ArticleEditor
-            article={currentArticle}
-            onSave={handleSaveArticle}
-            onCancel={() => setIsEditorOpen(false)}
-          />
-        )}
-
-        {isHistoryOpen && (
-          <ArticleHistory
-            history={history}
-            onClose={() => setIsHistoryOpen(false)}
-          />
-        )}
       </div>
     </motion.section>
   );
