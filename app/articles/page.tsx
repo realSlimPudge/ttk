@@ -1,13 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
 import { ArticleList } from "@/components/articles/article-list";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import useSWR from "swr";
 import { host } from "@/api/host";
-
 
 const fetcher = (url: string) => {
   const token = document.cookie
@@ -24,9 +22,11 @@ const fetcher = (url: string) => {
 };
 
 export default function ArticlesPage() {
-  const { data: articles, mutate } = useSWR(`${host}/api/v1/article/show`, fetcher, {refreshInterval: 10000});
-
-  
+  const { data: articles, mutate } = useSWR(
+    `${host}/api/v1/article/show`,
+    fetcher,
+    { refreshInterval: 10000 },
+  );
 
   const handleDeleteArticle = async (articleId: string) => {
     const token = document.cookie
@@ -67,9 +67,9 @@ export default function ArticlesPage() {
             </Button>
           </div>
         </div>
-              
+
         <ArticleList
-          articles={articles.articles }
+          articles={articles.articles}
           onDelete={handleDeleteArticle}
           onEdit={(article) => {
             console.log("Edit article:", article);

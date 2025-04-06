@@ -1,5 +1,5 @@
-export type TaskStatus = "current" | "postponed" | "completed"
-export type TaskPriority = "low" | "medium" | "high"
+export type TaskStatus = "PENDING" | "IN_PROGRESS" | "COMPLETED"
+export type TaskPriority = "LOW" | "MEDIUM" | "HIGH"
 
 export interface User {
   id: string
@@ -8,16 +8,15 @@ export interface User {
 }
 
 export interface Task {
-  id: string
-  title: string
-  content: string
-  imageUrl: string
-  createdAt: Date
-  dueDate: Date
-  status: TaskStatus
-  priority: TaskPriority
-  responsibleUser: User
-  createdBy: User
+  ID: string; // Уникальный идентификатор задачи
+  Title: string; // Название задачи
+  Content: string; // Описание задачи
+  Image: string; // URL изображения
+  CreatedAt: string; // Дата создания задачи
+  UserID: string; // ID пользователя, создавшего задачу
+  PlannedAt: string; // Запланированная дата выполнения
+  Priority: "LOW" | "MEDIUM" | "HIGH"; // Приоритет задачи
+  Status: "PENDING" | "IN_PROGRESS" | "COMPLETED"; // Статус задачи
 }
 
 export interface HistoryEntry {

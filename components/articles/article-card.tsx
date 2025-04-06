@@ -48,23 +48,24 @@ export function ArticleCard({ article, onEdit, onDelete }: ArticleCardProps) {
       });
       if (!res.ok) {
         throw new Error("Ошибка при удалении статьи");
-      } if(res.status === 500) {
+      }
+      if (res.status === 500) {
         toast.error("Ошибка при удалении статьи");
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.error("Ошибка при удалении статьи:", error);
       toast.error("Ошибка при удалении статьи");
-  }}
+    }
+  }
   const formatDate = (date: Date | string | undefined | null) => {
     if (!date) return "Неизвестно";
-  
+
     const parsedDate = typeof date === "string" ? new Date(date) : date;
-  
+
     if (isNaN(parsedDate.getTime())) {
       return "Неизвестно"; // Возвращаем значение по умолчанию, если дата некорректна
     }
-  
+
     return new Intl.DateTimeFormat("ru-RU", {
       day: "2-digit",
       month: "2-digit",
@@ -77,9 +78,7 @@ export function ArticleCard({ article, onEdit, onDelete }: ArticleCardProps) {
       <Card className="h-full flex flex-col">
         <CardHeader className="p-0">
           <div className="relative h-48 w-full">
-            
-              <NoImageArticle />
-
+            <NoImageArticle />
           </div>
         </CardHeader>
         <CardContent className="flex-1 p-4">
@@ -100,7 +99,7 @@ export function ArticleCard({ article, onEdit, onDelete }: ArticleCardProps) {
                   Редактировать
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={() => setIsDeleteDialogOpen(true)}
+                  onClick={() => handleDelete()}
                   className="text-red-500 focus:text-red-500"
                 >
                   <Trash2 className="mr-2 h-4 w-4" />
